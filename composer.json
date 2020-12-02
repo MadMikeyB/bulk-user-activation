@@ -1,0 +1,49 @@
+{
+    "name": "therefinery/bulk-user-activation",
+    "description": "Activate multiple user accounts at once",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "bulk user activation"
+    ],
+    "support": {
+        "docs": "https://github.com/https://github.com/the-refinery/bulk-user-activation/blob/master/README.md",
+        "issues": "https://github.com/https://github.com/the-refinery/bulk-user-activation/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "The Refinery",
+            "homepage": "https://the-refinery.io"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "require-dev": {
+      "craftcms/cms": "^3.2.0",
+      "codeception/codeception": "^3.0",
+      "vlucas/phpdotenv": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "therefinery\\bulkuseractivation\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Bulk User Activation",
+        "handle": "bulk-user-activation",
+        "developer": "The Refinery",
+        "developerUrl": "https://the-refinery.io",
+        "documentationUrl": "https://github.com/the-refinery/bulk-user-activation/blob/master/README.md",
+        "changelogUrl": "https://github.com/the-refinery/bulk-user-activation/blob/master/CHANGELOG.md",
+        "components": {
+            "bulkUserActivationService": "therefinery\\bulkuseractivation\\services\\BulkUserActivationService"
+        },
+        "class": "therefinery\\bulkuseractivation\\BulkUserActivation"
+    }
+}

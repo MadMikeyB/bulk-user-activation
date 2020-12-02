@@ -1,0 +1,40 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Bulk User Activation plugin for Craft CMS
+ *
+ * BulkUserActivationUtility Utility Content
+ *
+ * @author    The Refinery
+ * @copyright Copyright (c) 2020 The Refinery
+ * @link      https://the-refinery.io
+ * @package   BulkUserActivation
+ * @since     1.0.0
+ */
+#}
+
+
+<h1>Bulk User Activation Utility</h1>
+
+{% if hasPermission %}
+    {% set fullPageForm = true %}
+
+    {% if pendingUsersCount %}
+        <p>Click the button below to activate all pending user accounts.</p>
+    {% else %}
+        <p><em>There are no pending users to activate.</em></p>
+    {% endif %}
+
+    <form id="bulk-user-activation" class="utility" method="post" accept-charset="UTF-8">
+        {{ actionInput('bulk-user-activation/default/activate-users') }}
+        {{ csrfInput() }}
+
+        <div class="buttons">
+            <button type="submit" class="btn submit {{ pendingUsersCount ?: 'disabled' }}" {{ pendingUsersCount ?: 'disabled' }}>{{ "Activate Pending Users:"|t('bulk-user-activation') }} <strong>{{ pendingUsersCount }}</strong></button>
+            <div class="utility-status"></div>
+        </div>
+        <p class="response"></p>
+    </form>
+{% else %}
+    <p>Sorry, you don't have permission to do that.</p>
+{% endif %}
