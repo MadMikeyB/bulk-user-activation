@@ -77,6 +77,7 @@ class DefaultController extends Controller
         if( $jobId ) {
             return $this->asJson([
                 'success' => true,
+                'jobId' => $jobId
             ]);
         }
     }

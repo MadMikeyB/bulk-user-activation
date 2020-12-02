@@ -23,8 +23,6 @@
       this.$response = $('.response', this.$form);
 
       this.addListener(this.$form, 'submit', 'onSubmit');
-
-      console.log('js init')
     },
 
     onSubmit: function (ev) {
