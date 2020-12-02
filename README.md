@@ -16,11 +16,21 @@ To install the plugin, follow these instructions.
 
         cd /path/to/project
 
-2. Then tell Composer to load the plugin:
+2. Add a reference to this repo in the `repositories` array in `composer.json`:
 
-        composer require https://github.com/the-refinery/bulk-user-activation
+        "repositories": [
+                ...
+                {
+                        "type": "vcs",
+                        "url": "https://github.com/the-refinery/bulk-user-activation.git"
+                }
+        ]
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Bulk User Activation.
+3. Then tell Composer to load the plugin:
+
+        composer require therefinery/bulk-user-activation
+
+4. In the Control Panel, go to Settings → Plugins and click the “Install” button for Bulk User Activation.
 
 ## Bulk User Activation Overview
 
