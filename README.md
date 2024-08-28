@@ -1,4 +1,4 @@
-# Bulk User Activation plugin for Craft CMS 3.x
+# Bulk User Activation plugin for Craft CMS
 
 Activate multiple user accounts at once
 
@@ -6,7 +6,13 @@ Activate multiple user accounts at once
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires [PHP](https://www.php.net/) 7.4 - 8.2 and supports [Craft CMS](https://www.craftcms.com/) 3.x and 4.x.
+
+| Bulk User Activation  | Craft 3            | Craft 4            |
+|----------|--------------------|--------------------|
+| 1.x      | :white_check_mark: | :x:                |
+| 2.x      | :x:                | :white_check_mark: |
+
 
 ## Installation
 
