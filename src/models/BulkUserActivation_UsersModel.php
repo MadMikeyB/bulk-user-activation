@@ -40,12 +40,19 @@ class BulkUserActivation_UsersModel extends Model
      */
     public $someAttribute = 'Some Default';
 
-    public function getPendingUsers() {
-        $pendingUsers = User::find()->status('pending')->all();
+    /**
+     * Get all pending / inactive users
+     * 
+     * @return array
+     */
+    public function getPendingUsers() : array
+    {
+        $pendingUsers = User::find()->status(['pending', 'inactive'])->all();
         return $pendingUsers;
     }
 
-    public function getPendingUsersCount() {
+    public function getPendingUsersCount() 
+    {
         return count($this->getPendingUsers());
     }
 
@@ -62,7 +69,7 @@ class BulkUserActivation_UsersModel extends Model
      *
      * @return array
      */
-    public function rules()
+    public function rules() : array
     {
         return [
             ['someAttribute', 'string'],
