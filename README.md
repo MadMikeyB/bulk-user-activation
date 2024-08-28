@@ -59,3 +59,7 @@ Some things to do, and ideas for potential features:
 * Release it
 
 Brought to you by [The Refinery](https://the-refinery.io)
+
+<a href="https://github.com/the-refinery/bulk-user-activation/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=the-refinery/bulk-user-activation" />
+</a>
