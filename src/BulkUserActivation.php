@@ -137,15 +137,21 @@ class BulkUserActivation extends Plugin
                 }
             }
         );
-
-        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
-            $permissions = [];
-            $permissions[self::PERMISSION_BULKUSERACTIVATION_USERS] = [
-                'label' => Craft::t('bulk-user-activation', 'Activate Users')
-            ];
-
-            $event->permissions[Craft::t('bulk-user-activation', 'Bulk User Activation Utility')] = $permissions;
-        });
+        
+        Event::on(
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function (RegisterUserPermissionsEvent $event) {
+                $permissions = [];
+                $permissions[self::PERMISSION_BULKUSERACTIVATION_USERS] = [
+                    'label' => Craft::t('bulk-user-activation', 'Activate Users')
+                ];
+                $event->permissions[] = [
+                    'heading' => Craft::t('bulk-user-activation', 'Bulk User Activation Utility'),
+                    'permissions' => $permissions,
+                ];
+            }
+        );
 
         /**
          * Logging in Craft involves using one of the following methods:
