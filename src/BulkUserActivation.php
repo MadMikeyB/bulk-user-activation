@@ -79,7 +79,7 @@ class BulkUserActivation extends Plugin
      *
      * @var bool
      */
-    public $hasCpSection = false;
+    public bool $hasCpSection = false;
 
     // Public Methods
     // =========================================================================
