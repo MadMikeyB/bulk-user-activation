@@ -32,13 +32,20 @@ class BulkUserActivationTask extends BaseJob
 {
     // Public Properties
     // =========================================================================
-    
+
     /**
-     * Users elements
-     * 
-     * @var object|null
+     * Number of pending users when the job was queued.
+     *
+     * @var int|null
      */
-    public $users = null;
+    public $pendingUsersCount = null;
+
+    /**
+     * Number of users to load per activation batch.
+     *
+     * @var int
+     */
+    public $batchSize = 100;
 
     /**
      * Whether emails should be suppressed while users are activated.
@@ -59,9 +66,9 @@ class BulkUserActivationTask extends BaseJob
      */
     public function execute($queue) : void
     {
-        BulkUserActivation::$plugin->bulkUserActivationService->activateUsers(
-            $this->users ?: [],
+        BulkUserActivation::$plugin->bulkUserActivationService->activatePendingUsers(
             $this->suppressEmails,
+            $this->batchSize,
             function ($progress) use ($queue) {
                 $this->setProgress($queue, $progress);
             }
@@ -79,7 +86,7 @@ class BulkUserActivationTask extends BaseJob
     protected function defaultDescription(): string
     {
         return Craft::t('bulk-user-activation', 'Activating {usersCount} pending user accounts', [
-            'usersCount' => count($this->users ?: [])
+            'usersCount' => $this->pendingUsersCount ?? BulkUserActivation::$plugin->bulkUserActivationService->getPendingUsersCount()
         ]);
     }
 }

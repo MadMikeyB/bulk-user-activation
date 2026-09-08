@@ -52,7 +52,7 @@ class DefaultController extends Controller
             ]);
         }
 
-        $pendingUsers = BulkUserActivation::$plugin->bulkUserActivationService->getPendingUsers();
+        $pendingUsersCount = BulkUserActivation::$plugin->bulkUserActivationService->getPendingUsersCount();
         $params = Craft::$app->getRequest()->getBodyParam('params', []);
         $suppressEmails = $params['suppressEmails'] ?? true;
 
@@ -64,7 +64,7 @@ class DefaultController extends Controller
 
         $queue = Craft::$app->getQueue();
         $jobId = $queue->push(new BulkUserActivationJob([
-            'users' => $pendingUsers,
+            'pendingUsersCount' => $pendingUsersCount,
             'suppressEmails' => $suppressEmails,
         ]));
 

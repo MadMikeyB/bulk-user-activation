@@ -34,23 +34,49 @@ class BulkUserActivationService extends Component
     // =========================================================================
 
     /**
-     * Returns users that can be activated by this plugin.
-     *
-     * @return array
-     */
-    public function getPendingUsers(): array
-    {
-        return User::find()->status(['pending', 'inactive'])->all();
-    }
-
-    /**
      * Returns the number of users that can be activated by this plugin.
      *
      * @return int
      */
     public function getPendingUsersCount(): int
     {
-        return count($this->getPendingUsers());
+        return (int)User::find()->status(['pending', 'inactive'])->count();
+    }
+
+    /**
+     * Activates pending users in batches.
+     *
+     * @param bool $suppressEmails
+     * @param int $batchSize
+     * @param callable|null $progressCallback
+     */
+    public function activatePendingUsers(bool $suppressEmails = true, int $batchSize = 100, ?callable $progressCallback = null): void
+    {
+        $batchSize = max(1, $batchSize);
+        $userIds = User::find()->status(['pending', 'inactive'])->ids();
+        $totalUsers = count($userIds);
+
+        if ($totalUsers === 0) {
+            return;
+        }
+
+        $processedUsers = 0;
+
+        foreach (array_chunk($userIds, $batchSize) as $userIdBatch) {
+            $users = User::find()->id($userIdBatch)->status(['pending', 'inactive'])->all();
+
+            $this->activateUsers($users, $suppressEmails, function () use (&$processedUsers, $totalUsers, $progressCallback) {
+                if ($progressCallback !== null) {
+                    $progressCallback($processedUsers / $totalUsers);
+                }
+
+                $processedUsers++;
+            });
+        }
+
+        if ($progressCallback !== null) {
+            $progressCallback(1);
+        }
     }
 
     /**
