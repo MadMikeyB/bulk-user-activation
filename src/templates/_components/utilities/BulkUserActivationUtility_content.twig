@@ -29,8 +29,19 @@
         {{ actionInput('bulk-user-activation/default/activate-users') }}
         {{ csrfInput() }}
 
+        <div class="field">
+            <div class="input ltr">
+                <input type="hidden" name="suppressEmails" value="0">
+                <label>
+                    <input type="checkbox" name="suppressEmails" value="1" checked>
+                    {{ "Suppress activation emails"|t('bulk-user-activation') }}
+                </label>
+            </div>
+            <p class="instructions">{{ "Prevents any emails triggered during the bulk activation job from being sent."|t('bulk-user-activation') }}</p>
+        </div>
+
         <div class="buttons">
-            <button type="submit" class="btn submit {{ pendingUsersCount ?: 'disabled' }}" {{ pendingUsersCount ?: 'disabled' }}>{{ "Activate Pending Users:"|t('bulk-user-activation') }} <strong>{{ pendingUsersCount }}</strong></button>
+            <button type="submit" class="btn submit {{ pendingUsersCount ?: 'disabled' }}" {{ pendingUsersCount ?: 'disabled' }}>{{ "Activate Pending Users:"|t('bulk-user-activation') }}&nbsp;&nbsp;<strong>{{ pendingUsersCount }}</strong></button>
             <div class="utility-status"></div>
         </div>
         <p class="response"></p>

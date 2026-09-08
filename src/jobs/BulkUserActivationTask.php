@@ -14,8 +14,6 @@ use therefinery\bulkuseractivation\BulkUserActivation;
 
 use Craft;
 use craft\queue\BaseJob;
-use craft\elements\User;
-use craft\services\Users;
 
 /**
  * BulkUserActivationTask job
@@ -23,23 +21,6 @@ use craft\services\Users;
  * Jobs are run in separate process via a Queue of pending jobs. This allows
  * you to spin lengthy processing off into a separate PHP process that does not
  * block the main process.
- *
- * You can use it like this:
- *
- * use therefinery\bulkuseractivation\jobs\BulkUserActivationTask as BulkUserActivationTaskJob;
- *
- * $queue = Craft::$app->getQueue();
- * $jobId = $queue->push(new BulkUserActivationTaskJob([
- *     'description' => Craft::t('bulk-user-activation', 'This overrides the default description'),
- *     'someAttribute' => 'someValue',
- * ]));
- *
- * The key/value pairs that you pass in to the job will set the public properties
- * for that object. Thus whatever you set 'someAttribute' to will cause the
- * public property $someAttribute to be set in the job.
- *
- * Passing in 'description' is optional, and only if you want to override the default
- * description.
  *
  * More info: https://github.com/yiisoft/yii2-queue
  *
@@ -59,11 +40,12 @@ class BulkUserActivationTask extends BaseJob
      */
     public $users = null;
 
-    // private $pending = null;
-
-    // function __construct() {
-    //     $this->pending = User::find()->status('pending')->all();
-    // }
+    /**
+     * Whether emails should be suppressed while users are activated.
+     *
+     * @var bool
+     */
+    public $suppressEmails = true;
 
     // Public Methods
     // =========================================================================
@@ -77,24 +59,13 @@ class BulkUserActivationTask extends BaseJob
      */
     public function execute($queue) : void
     {
-        // $pendingUsers = User::find()->status('pending')->all();
-        $UsersService = new Users;
-        $totalUsers = count($this->users);
-
-        foreach($this->users as $i => $user) {
-            $this->setProgress($queue, $i / $totalUsers);
-
-            try {
-                $UsersService->activateUser($user);
-            } catch (\Throwable $e) {
-
-                Craft::error("BulkUserActivation: Attempting to activate UserID='{$user->id}' failed: \n".$e->getTraceAsString());
-                continue;
-                // throw $e;
+        BulkUserActivation::$plugin->bulkUserActivationService->activateUsers(
+            $this->users ?: [],
+            $this->suppressEmails,
+            function ($progress) use ($queue) {
+                $this->setProgress($queue, $progress);
             }
-
-            Craft::info("BulkUserActivation: Successfully activated user UserID='{$user->id}'!");
-        }
+        );
     }
 
     // Protected Methods
@@ -108,7 +79,7 @@ class BulkUserActivationTask extends BaseJob
     protected function defaultDescription(): string
     {
         return Craft::t('bulk-user-activation', 'Activating {usersCount} pending user accounts', [
-            'usersCount' => count($this->users)
+            'usersCount' => count($this->users ?: [])
         ]);
     }
 }

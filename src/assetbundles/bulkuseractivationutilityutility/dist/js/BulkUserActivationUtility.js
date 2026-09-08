@@ -54,7 +54,8 @@
               }
 
               if (response && response.jobId) {
-                this.$response.text('Task added to queue.');
+                var emailStatus = response.suppressEmails ? 'Emails suppressed.' : 'Emails not suppressed.';
+                this.$response.text('Task added to queue. ' + emailStatus);
               }
 
               this.updateProgressBar();

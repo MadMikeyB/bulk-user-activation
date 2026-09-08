@@ -11,12 +11,10 @@
 namespace therefinery\bulkuseractivation\controllers;
 
 use therefinery\bulkuseractivation\BulkUserActivation;
-use therefinery\bulkuseractivation\models\BulkUserActivation_UsersModel;
 use therefinery\bulkuseractivation\jobs\BulkUserActivationTask as BulkUserActivationJob;
 
 use Craft;
 use craft\web\Controller;
-use craft\services\Users;
 
 /**
  * Default Controller
@@ -41,16 +39,6 @@ use craft\services\Users;
 class DefaultController extends Controller
 {
 
-    // Protected Properties
-    // =========================================================================
-
-    /**
-     * @var    bool|array Allows anonymous access to this controller's actions.
-     *         The actions must be in 'kebab-case'
-     * @access protected
-     */
-    protected array|int|bool $allowAnonymous = ['index', 'do-something'];
-
     // Public Methods
     // =========================================================================
 
@@ -64,21 +52,32 @@ class DefaultController extends Controller
             ]);
         }
 
-        $users = new BulkUserActivation_UsersModel;
-        $pendingUsers = $users->getPendingUsers();
-        // $UsersService = new Users;
-        $error = null;
+        $pendingUsers = BulkUserActivation::$plugin->bulkUserActivationService->getPendingUsers();
+        $params = Craft::$app->getRequest()->getBodyParam('params', []);
+        $suppressEmails = $params['suppressEmails'] ?? true;
+
+        if (is_array($suppressEmails)) {
+            $suppressEmails = end($suppressEmails);
+        }
+
+        $suppressEmails = filter_var($suppressEmails, FILTER_VALIDATE_BOOLEAN);
 
         $queue = Craft::$app->getQueue();
         $jobId = $queue->push(new BulkUserActivationJob([
-            'users' => $pendingUsers
+            'users' => $pendingUsers,
+            'suppressEmails' => $suppressEmails,
         ]));
 
         if( $jobId ) {
             return $this->asJson([
                 'success' => true,
-                'jobId' => $jobId
+                'jobId' => $jobId,
+                'suppressEmails' => $suppressEmails,
             ]);
         }
+
+        return $this->asJson([
+            'success' => false,
+        ]);
     }
 }

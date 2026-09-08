@@ -11,12 +11,10 @@
 namespace therefinery\bulkuseractivation\utilities;
 
 use therefinery\bulkuseractivation\BulkUserActivation;
-use therefinery\bulkuseractivation\models\BulkUserActivation_UsersModel;
 use therefinery\bulkuseractivation\assetbundles\bulkuseractivationutilityutility\BulkUserActivationUtilityUtilityAsset;
 
 use Craft;
 use craft\base\Utility;
-use craft\elements\User;
 
 /**
  * Bulk User Activation Utility
@@ -85,7 +83,6 @@ class BulkUserActivationUtility extends Utility
      */
     public static function contentHtml(): string
     {
-        // $currentUser = new CurrentUser;
         $hasPermission = Craft::$app->user->checkPermission(BulkUserActivation::PERMISSION_BULKUSERACTIVATION_USERS);
 
         $view = Craft::$app->getView();
@@ -93,13 +90,10 @@ class BulkUserActivationUtility extends Utility
         $view->registerAssetBundle(BulkUserActivationUtilityUtilityAsset::class);
         $view->registerJs('new Craft.BulkUserActivationUtility(\'bulk-user-activation\');');
 
-        $users = new BulkUserActivation_UsersModel();
-        $pendingUsers = $users->getPendingUsers();
-
         return $view->renderTemplate(
             'bulk-user-activation/_components/utilities/BulkUserActivationUtility_content',
             [
-                'pendingUsersCount' => count($pendingUsers),
+                'pendingUsersCount' => BulkUserActivation::$plugin->bulkUserActivationService->getPendingUsersCount(),
                 'hasPermission' => $hasPermission 
             ]
         );

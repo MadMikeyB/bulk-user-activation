@@ -10,7 +10,6 @@
 
 namespace therefinery\bulkuseractivation\assetbundles\bulkuseractivationutilityutility;
 
-use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 

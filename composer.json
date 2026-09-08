@@ -2,7 +2,7 @@
     "name": "therefinery/bulk-user-activation",
     "description": "Activate multiple user accounts at once",
     "type": "craft-plugin",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "keywords": [
         "craft",
         "cms",
@@ -19,6 +19,10 @@
         {
             "name": "The Refinery",
             "homepage": "https://the-refinery.io"
+        },
+        {
+            "name": "Michael Burton",
+            "homepage": "https://mikeylicio.us"
         }
     ],
     "require": {

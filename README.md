@@ -8,10 +8,10 @@ Activate multiple user accounts at once
 
 This plugin requires [PHP](https://www.php.net/) 7.4 - 8.2 and supports [Craft CMS](https://www.craftcms.com/) 3.x and 4.x.
 
-| Bulk User Activation  | Craft 3            | Craft 4            |
-|----------|--------------------|--------------------|
-| 1.x      | :white_check_mark: | :x:                |
-| 2.x      | :x:                | :white_check_mark: |
+| Bulk User Activation  | Craft 3            | Craft 4            | Craft 5            |
+|----------|--------------------|--------------------|--------------------|
+| 1.x      | :white_check_mark: | :x:                | :x:                |
+| 2.x      | :x:                | :white_check_mark: | :white_check_mark: |
 
 
 ## Installation
@@ -28,7 +28,7 @@ To install the plugin, follow these instructions.
                 ...
                 {
                         "type": "vcs",
-                        "url": "https://github.com/the-refinery/bulk-user-activation.git"
+                        "url": "https://github.com/madmikeyb/bulk-user-activation.git"
                 }
         ]
 

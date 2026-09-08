@@ -10,10 +10,10 @@
 
 namespace therefinery\bulkuseractivation\services;
 
-use therefinery\bulkuseractivation\BulkUserActivation;
-
 use Craft;
 use craft\base\Component;
+use craft\elements\User;
+use craft\mail\Mailer as CraftMailer;
 
 /**
  * BulkUserActivationService Service
@@ -34,19 +34,70 @@ class BulkUserActivationService extends Component
     // =========================================================================
 
     /**
-     * This function can literally be anything you want, and you can have as many service
-     * functions as you want
+     * Returns users that can be activated by this plugin.
      *
-     * From any other plugin file, call it like this:
-     *
-     *     BulkUserActivation::$plugin->bulkUserActivationService->exampleService()
-     *
-     * @return mixed
+     * @return array
      */
-    public function exampleService()
+    public function getPendingUsers(): array
     {
-        $result = 'something';
+        return User::find()->status(['pending', 'inactive'])->all();
+    }
 
-        return $result;
+    /**
+     * Returns the number of users that can be activated by this plugin.
+     *
+     * @return int
+     */
+    public function getPendingUsersCount(): int
+    {
+        return count($this->getPendingUsers());
+    }
+
+    /**
+     * Activates the supplied users.
+     *
+     * @param array $users
+     * @param bool $suppressEmails
+     * @param callable|null $progressCallback
+     */
+    public function activateUsers(array $users, bool $suppressEmails = true, ?callable $progressCallback = null): void
+    {
+        $usersService = Craft::$app->getUsers();
+        $mailer = Craft::$app->getMailer();
+        $totalUsers = count($users);
+        $emailSuppressionStatus = $suppressEmails ? 'suppressed' : 'not suppressed';
+        $suppressEmail = null;
+
+        if ($totalUsers === 0) {
+            return;
+        }
+
+        if ($suppressEmails) {
+            $suppressEmail = static function ($event) {
+                $event->isValid = false;
+            };
+            $mailer->on(CraftMailer::EVENT_BEFORE_SEND, $suppressEmail);
+        }
+
+        try {
+            foreach($users as $i => $user) {
+                if ($progressCallback !== null) {
+                    $progressCallback($i / $totalUsers);
+                }
+
+                try {
+                    $usersService->activateUser($user);
+                } catch (\Throwable $e) {
+                    Craft::error("BulkUserActivation: Attempting to activate UserID='{$user->id}' failed: \n".$e->getTraceAsString());
+                    continue;
+                }
+
+                Craft::info("BulkUserActivation: Successfully activated user UserID='{$user->id}'! Emails were {$emailSuppressionStatus}.");
+            }
+        } finally {
+            if ($suppressEmail !== null) {
+                $mailer->off(CraftMailer::EVENT_BEFORE_SEND, $suppressEmail);
+            }
+        }
     }
 }
